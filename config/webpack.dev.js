@@ -122,7 +122,7 @@ module.exports = {
     // 设置为开发模式
     mode: "development",
 
-    // 开启source-map，方便调试
+    // 开启source-map，方便调试，只包含行信息
     devtool: "cheap-module-source-map",
 
     optimization: {

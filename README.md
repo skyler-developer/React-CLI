@@ -2,7 +2,7 @@
 
 1. 支持组件级HMR
 2. 开启调试map
-
+3. 使用split chunks减小文件体积
 
 这两个插件用于支持react组件级hmr
 npm install -D @pmmmwh/react-refresh-webpack-plugin react-refresh
