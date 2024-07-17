@@ -12,3 +12,4 @@ npm install -D @pmmmwh/react-refresh-webpack-plugin react-refresh
 splitChunks: {
             chunks: "all",
         },
+        demo
