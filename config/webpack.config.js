@@ -1,4 +1,5 @@
 const path = require("path");
+const os = require("os");
 const EslintWebpackPlugin = require("eslint-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
@@ -8,6 +9,9 @@ const ImageMinimizerPlugin = require("image-minimizer-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
 const PreloadWebpackPlugin = require("@vue/preload-webpack-plugin");
+
+// 获取cpu核数
+const threads = os.cpus().length;
 
 // 获取cross-env定义的环境变量
 const isProduction = process.env.NODE_ENV === "production";
@@ -59,6 +63,7 @@ module.exports = {
         rules: [
             // loader的配置
             {
+                // oneOf只会匹配一个成功的loader
                 oneOf: [
                     // 处理css
                     {
@@ -95,15 +100,31 @@ module.exports = {
                     // 处理js
                     {
                         test: /\.jsx?$/,
+                        // include：只包含src下的文件，排除node_modules等文件
                         include: path.resolve(__dirname, "../src"),
-                        loader: "babel-loader",
-                        options: {
-                            cacheDirectory: true,
-                            cacheCompression: false,
-                            plugins: [
-                                !isProduction && "react-refresh/babel", // 激活js的HMR
-                            ].filter(Boolean),
-                        },
+                        use: [
+                            {
+                                // 使用thread-loader来进行多进程打包（每个worker线程运行在独立的进程中）
+                                loader: "thread-loader",
+                                options: {
+                                    // 产生的worker数量,这里设置为了本地电脑cpu核心数
+                                    workers: threads,
+                                },
+                            },
+                            {
+                                loader: "babel-loader",
+                                options: {
+                                    // 开启babel缓存
+                                    cacheDirectory: true,
+
+                                    // 关闭缓存文件压缩
+                                    cacheCompression: false,
+                                    plugins: [
+                                        !isProduction && "react-refresh/babel", // 激活js的HMR
+                                    ].filter(Boolean),
+                                },
+                            },
+                        ],
                     },
                 ],
             },
@@ -114,8 +135,15 @@ module.exports = {
         new EslintWebpackPlugin({
             context: path.resolve(__dirname, "../src"),
             exclude: "node_modules",
+
+            // 开启eslint缓存
             cache: true,
+
+            // 指定缓存文件路径
             cacheLocation: path.resolve(__dirname, "../node_modules/.cache/.eslintcache"),
+
+            // 开启多进程
+            threads: threads,
         }),
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, "../public/index.html"),
@@ -176,9 +204,17 @@ module.exports = {
         },
         // 是否需要进行压缩
         minimize: isProduction,
+
+        // 压缩配置
         minimizer: [
+            // 压缩css
             new CssMinimizerWebpackPlugin(),
-            new TerserWebpackPlugin(),
+
+            // 压缩js
+            new TerserWebpackPlugin({
+                // 开启多进程和进程数量
+                parallel: threads,
+            }),
             new ImageMinimizerPlugin({
                 minimizer: {
                     implementation: ImageMinimizerPlugin.imageminGenerate,
