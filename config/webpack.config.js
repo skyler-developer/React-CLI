@@ -57,50 +57,55 @@ module.exports = {
     },
     module: {
         rules: [
-            // 处理css
+            // loader的配置
             {
-                test: /\.css$/,
-                use: getStyleLoaders(),
-            },
-            {
-                test: /\.less$/,
-                use: getStyleLoaders("less-loader"),
-            },
-            {
-                test: /\.s[ac]ss$/,
-                use: getStyleLoaders("sass-loader"),
-            },
-            {
-                test: /\.styl$/,
-                use: getStyleLoaders("stylus-loader"),
-            },
-            // 处理图片
-            {
-                test: /\.(jpe?g|png|gif|webp|svg)$/,
-                type: "asset",
-                parser: {
-                    dataUrlCondition: {
-                        maxSize: 10 * 1024,
+                oneOf: [
+                    // 处理css
+                    {
+                        test: /\.css$/,
+                        use: getStyleLoaders(),
                     },
-                },
-            },
-            // 处理其他资源
-            {
-                test: /\.(woff2?|ttf)$/,
-                type: "asset/resource",
-            },
-            // 处理js
-            {
-                test: /\.jsx?$/,
-                include: path.resolve(__dirname, "../src"),
-                loader: "babel-loader",
-                options: {
-                    cacheDirectory: true,
-                    cacheCompression: false,
-                    plugins: [
-                        !isProduction && "react-refresh/babel", // 激活js的HMR
-                    ].filter(Boolean),
-                },
+                    {
+                        test: /\.less$/,
+                        use: getStyleLoaders("less-loader"),
+                    },
+                    {
+                        test: /\.s[ac]ss$/,
+                        use: getStyleLoaders("sass-loader"),
+                    },
+                    {
+                        test: /\.styl$/,
+                        use: getStyleLoaders("stylus-loader"),
+                    },
+                    // 处理图片
+                    {
+                        test: /\.(jpe?g|png|gif|webp|svg)$/,
+                        type: "asset",
+                        parser: {
+                            dataUrlCondition: {
+                                maxSize: 10 * 1024,
+                            },
+                        },
+                    },
+                    // 处理其他资源
+                    {
+                        test: /\.(woff2?|ttf)$/,
+                        type: "asset/resource",
+                    },
+                    // 处理js
+                    {
+                        test: /\.jsx?$/,
+                        include: path.resolve(__dirname, "../src"),
+                        loader: "babel-loader",
+                        options: {
+                            cacheDirectory: true,
+                            cacheCompression: false,
+                            plugins: [
+                                !isProduction && "react-refresh/babel", // 激活js的HMR
+                            ].filter(Boolean),
+                        },
+                    },
+                ],
             },
         ],
     },
