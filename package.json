@@ -19,6 +19,7 @@
     "devDependencies": {
         "@babel/core": "^7.17.10",
         "@pmmmwh/react-refresh-webpack-plugin": "^0.5.5",
+        "@vue/preload-webpack-plugin": "^2.0.0",
         "babel-loader": "^8.2.5",
         "babel-preset-react-app": "^10.0.1",
         "copy-webpack-plugin": "^10.2.4",
