@@ -1,6 +1,6 @@
-import React from "react";
+import React, { Suspense, lazy, useState, useEffect } from "react";
 import Home from "./pages/Home/Home";
-import About from "./pages/About/About";
+const About = lazy(() => import(/* webpackChunkName:"aboutAAA" */ "./pages/About/About"));
 import { Link, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -18,7 +18,14 @@ function App() {
             </ul>
             <Routes>
                 <Route path="home" element={<Home />} />
-                <Route path="about" element={<About />} />
+                <Route
+                    path="about"
+                    element={
+                        <Suspense fallback={<h1>Loading...</h1>}>
+                            <About />
+                        </Suspense>
+                    }
+                />
             </Routes>
         </>
     );

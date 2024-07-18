@@ -9,6 +9,7 @@ const ImageMinimizerPlugin = require("image-minimizer-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
 const PreloadWebpackPlugin = require("@vue/preload-webpack-plugin");
+const WorkboxPlugin = require("workbox-webpack-plugin");
 
 // 获取cpu核数
 const threads = os.cpus().length;
@@ -49,14 +50,29 @@ const getStyleLoaders = (pre) => {
 };
 
 module.exports = {
+    // 入口文件，相对路径
     entry: "./src/main.js",
+
+    // 输出
     output: {
+        // 所有文件的输出路径
+        // __dirname nodejs的变量，代表当前文件的文件夹目录
+        // 绝对路径
         path: isProduction ? path.resolve(__dirname, "../dist") : undefined,
+
+        // 入口文件打包输出文件名
         filename: isProduction ? "static/js/[name].[contenthash:10].js" : "static/js/[name].js",
+
+        // 非入口chunk文件名
         chunkFilename: isProduction
             ? "static/js/[name].[contenthash:10].chunk.js"
             : "static/js/[name].chunk.js",
+
+        // 资源文件名（图片、字体等）
         assetModuleFilename: "static/media/[hash:10][ext][query]",
+
+        // 自动清空上次打包的内容
+        // 原理：在打包前，将path整个目录内容清空，再进行打包
         clean: true,
     },
     module: {
@@ -121,6 +137,9 @@ module.exports = {
                                     cacheCompression: false,
                                     plugins: [
                                         !isProduction && "react-refresh/babel", // 激活js的HMR
+
+                                        // 对babel进行tree-shaking,以减少代码体积
+                                        "@babel/plugin-transform-runtime",
                                     ].filter(Boolean),
                                 },
                             },
@@ -148,15 +167,26 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, "../public/index.html"),
         }),
+
+        // 开启preloader/prefetch，可在页面进入时/浏览器空闲时加载动态导入的文件
         new PreloadWebpackPlugin({
-            rel: "preload",
-            as: "script",
+            rel: "prefetch",
         }),
+
+        // pwa配置插件
+        new WorkboxPlugin.GenerateSW({
+            // 这些选项帮助快速启用 ServiceWorkers
+            // 不允许遗留任何“旧的” ServiceWorkers
+            clientsClaim: true,
+            skipWaiting: true,
+        }),
+
         isProduction &&
             new MiniCssExtractPlugin({
                 filename: "static/css/[name].[contenthash:10].css",
                 chunkFilename: "static/css/[name].[contenthash:10].chunk.css",
             }),
+
         isProduction &&
             new CopyPlugin({
                 patterns: [
@@ -176,7 +206,9 @@ module.exports = {
     mode: isProduction ? "production" : "development",
     devtool: isProduction ? "source-map" : "cheap-module-source-map",
     optimization: {
+        // code split配置
         splitChunks: {
+            // 可将依赖node_modules代码分割出来，提高code cache命中率
             chunks: "all",
             cacheGroups: {
                 // react react-dom react-router-dom 一起打包成一个js文件
@@ -199,6 +231,10 @@ module.exports = {
                 },
             },
         },
+
+        // 生成runtime文件，提高缓存命中率，例：main.js中依赖math.js，如果没有runtime.js，
+        // 假如math.js改变，main.ja也会改变，无法利用缓存
+        // 加入runtime.js，只会改变math.js与runtim.js，main.js不会改变，可以利用缓存
         runtimeChunk: {
             name: (entrypoint) => `runtime~${entrypoint.name}.js`,
         },
@@ -215,6 +251,8 @@ module.exports = {
                 // 开启多进程和进程数量
                 parallel: threads,
             }),
+
+            // 压缩图片资源
             new ImageMinimizerPlugin({
                 minimizer: {
                     implementation: ImageMinimizerPlugin.imageminGenerate,

@@ -1,7 +1,9 @@
 import React from "react";
 
 function Message() {
-    throw Error("message");
+    import( /* webpackChunkName: "count" */ "./count").then(({ count }) => {
+        console.log(count(1, 2));
+    });
     return <div>message</div>;
 }
 
