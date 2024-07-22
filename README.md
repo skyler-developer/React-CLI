@@ -1,3 +1,9 @@
+# 项目说明
+1. 依赖下载 npm i
+2. 项目启动 npm run start
+3. 项目打包 npm run build
+4. 入口文件通过main.js注册，src文件夹内编写文件代码
+
 # 支持SourceMap（提升开发体验）
 
 1. SourceMap(源代码映射)是一个用来生成源代码与构建后代码一一映射的文件的方案。
