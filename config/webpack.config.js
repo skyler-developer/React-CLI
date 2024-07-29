@@ -164,6 +164,8 @@ module.exports = {
             // 开启多进程
             threads: threads,
         }),
+
+        // 根据指定的html模板文件生成新的html文件，并将打包后的js文件自动引入到此html文件中
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, "../public/index.html"),
         }),
