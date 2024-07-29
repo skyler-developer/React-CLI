@@ -151,6 +151,8 @@ module.exports = {
     },
     // 处理html
     plugins: [
+
+        // eslint代码检查，会将eslintrc.js文件中的检查结果输出到构建信息中
         new EslintWebpackPlugin({
             context: path.resolve(__dirname, "../src"),
             exclude: "node_modules",
