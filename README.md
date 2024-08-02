@@ -1,6 +1,6 @@
 # 项目说明
 1. 依赖下载 npm i
-2. 项目启动 npm run start
+2. 项目启动 npm start
 3. 项目打包 npm run build
 4. 入口文件通过main.js注册，src文件夹内编写文件代码
 
