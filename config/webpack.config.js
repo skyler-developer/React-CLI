@@ -305,6 +305,9 @@ module.exports = {
         port: 3000,
         open: true,
         hot: true, // 开启HMR
+        client: {
+            logging: "none", // 关闭 HMR 相关信息的输出
+        },
         historyApiFallback: true, // 解决前端路由刷新404问题
     },
     performance: false, // 关闭性能分析，提升打包速度

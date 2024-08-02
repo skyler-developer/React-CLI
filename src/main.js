@@ -5,7 +5,7 @@ const root = ReactDOM.createRoot(document.getElementById("app"));
 root.render(<App />);
 
 // 注册pwa页面
-if ("serviceWorker" in navigator) {
+if (process.env.NODE_ENV === "production" && "serviceWorker" in navigator) {
     window.addEventListener("load", () => {
         navigator.serviceWorker
             .register("/dist/service-worker.js")
