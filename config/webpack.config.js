@@ -3,8 +3,14 @@ const os = require("os");
 const EslintWebpackPlugin = require("eslint-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+
+// css代码压缩
 const CssMinimizerWebpackPlugin = require("css-minimizer-webpack-plugin");
+
+// js代码压缩，webpack默认使用此插件压缩，也可自定义配置
 const TerserWebpackPlugin = require("terser-webpack-plugin");
+
+// 图片压缩
 const ImageMinimizerPlugin = require("image-minimizer-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
@@ -151,7 +157,6 @@ module.exports = {
     },
     // 处理html
     plugins: [
-
         // eslint代码检查，会将eslintrc.js文件中的检查结果输出到构建信息中
         new EslintWebpackPlugin({
             context: path.resolve(__dirname, "../src"),
@@ -213,7 +218,7 @@ module.exports = {
     optimization: {
         // code split配置
         splitChunks: {
-            // 可将依赖node_modules代码分割出来，提高code cache命中率
+            // 可将依赖node_modules代码分割出来，提高code cache命中率，内部通过splitChunksPlugin实现，已被webpack集成
             chunks: "all",
             cacheGroups: {
                 // react react-dom react-router-dom 一起打包成一个js文件
@@ -249,7 +254,10 @@ module.exports = {
         // 压缩配置
         minimizer: [
             // 压缩css
-            new CssMinimizerWebpackPlugin(),
+            new CssMinimizerWebpackPlugin({
+                // 开启多进程和进程数量
+                parallel: threads,
+            }),
 
             // 压缩js
             new TerserWebpackPlugin({
