@@ -192,6 +192,7 @@ module.exports = {
             }),
 
         isProduction &&
+            // 将CSS从bundle中提取出来单独打包
             new MiniCssExtractPlugin({
                 filename: "static/css/[name].[contenthash:10].css",
                 chunkFilename: "static/css/[name].[contenthash:10].chunk.css",
