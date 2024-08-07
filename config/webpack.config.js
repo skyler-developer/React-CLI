@@ -44,10 +44,7 @@ const getStyleLoaders = (pre) => {
             options:
                 pre === "less-loader"
                     ? {
-                          // antd自定义主题配置
-                          // 主题色文档：https://ant.design/docs/react/customize-theme-cn#Ant-Design-%E7%9A%84%E6%A0%B7%E5%BC%8F%E5%8F%98%E9%87%8F
                           lessOptions: {
-                              modifyVars: { "@primary-color": "#1DA57A" },
                               javascriptEnabled: true,
                           },
                       }
