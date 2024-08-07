@@ -26,6 +26,7 @@ const isProduction = process.env.NODE_ENV === "production";
 // 返回处理样式loader函数
 const getStyleLoaders = (pre) => {
     return [
+        // 生产环境中，将css提取到单独的文件
         isProduction ? MiniCssExtractPlugin.loader : "style-loader",
         "css-loader",
         {
