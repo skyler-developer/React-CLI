@@ -13,6 +13,8 @@ const TerserWebpackPlugin = require("terser-webpack-plugin");
 // 图片压缩
 const ImageMinimizerPlugin = require("image-minimizer-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
+
+// 实现react组件热更新
 const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
 const PreloadWebpackPlugin = require("@vue/preload-webpack-plugin");
 const WorkboxPlugin = require("workbox-webpack-plugin");
