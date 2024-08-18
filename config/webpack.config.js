@@ -19,6 +19,9 @@ const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin"
 const PreloadWebpackPlugin = require("@vue/preload-webpack-plugin");
 const WorkboxPlugin = require("workbox-webpack-plugin");
 
+// bundle体积分析
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
+
 // 获取cpu核数
 const threads = os.cpus().length;
 
@@ -213,6 +216,8 @@ module.exports = {
             }),
 
         !isProduction && new ReactRefreshWebpackPlugin(),
+
+        isProduction && new BundleAnalyzerPlugin(),
     ].filter(Boolean),
     mode: isProduction ? "production" : "development",
     devtool: isProduction ? "source-map" : "cheap-module-source-map",
